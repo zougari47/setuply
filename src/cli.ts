@@ -19,6 +19,7 @@ import { detectProject } from "@/lib/detector"
 import { printSignature } from "@/lib/signature"
 import { initOxfmt } from "@/configs/oxfmt"
 import { initOxlint } from "@/configs/oxlint"
+import { initHusky } from "@/configs/husky"
 import { writeFileSync } from "node:fs"
 import { getTailwindStylesheet, installDeps } from "@/lib/utils"
 
@@ -155,17 +156,8 @@ export async function runSetupWizard() {
     project,
   }
 
-  for (const tool of options.tools) {
-    switch (tool) {
-      case "oxfmt":
-        await initOxfmt(options)
-        break
-      case "oxlint":
-        await initOxlint(options)
-        break
-      // Add other tool initializers here (oxlint, husky, etc.)
-    }
-  }
+  let pmName = "npm"
+  outro(JSON.stringify(options.tools))
 
   if (options.tools.length > 0) {
     const s = spinner()
@@ -174,12 +166,31 @@ export async function runSetupWizard() {
     )
 
     try {
-      const { pmName } = await installDeps(options.tools)
+      const result = await installDeps(options.tools)
+      pmName = result.pmName
       s.stop(`Installed dependencies successfully via ${pmName}`)
     } catch (error) {
       s.stop(
         `Failed to install dependencies. Please run your package manager's install command manually.`
       )
+    }
+  }
+
+  for (const tool of options.tools) {
+    try {
+      switch (tool) {
+        case "oxfmt":
+          await initOxfmt(options)
+          break
+        case "oxlint":
+          await initOxlint(options)
+          break
+        case "husky":
+          await initHusky(options, pmName)
+          break
+      }
+    } catch (error) {
+      console.error(`Failed to initialize ${tool}:`, error)
     }
   }
 
