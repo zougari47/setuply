@@ -20,6 +20,7 @@ import { printSignature } from "@/lib/signature"
 import { initOxfmt } from "@/configs/oxfmt"
 import { initOxlint } from "@/configs/oxlint"
 import { initHusky } from "@/configs/husky"
+import { initLintStaged } from "@/configs/lintstaged"
 import { writeFileSync } from "node:fs"
 import { getTailwindStylesheet, installDeps } from "@/lib/utils"
 
@@ -56,10 +57,10 @@ export async function runSetupWizard() {
   const tools = await multiselect({
     message: "What to setup?",
     options: [
-      { value: "oxlint", label: "oxlint" },
-      { value: "oxfmt", label: "oxfmt" },
-      { value: "husky", label: "husky" },
-      { value: "lintstaged", label: "lint-staged" },
+      { value: "oxlint", label: "Oxlint" },
+      { value: "oxfmt", label: "Oxfmt" },
+      { value: "husky", label: "Husky" },
+      { value: "lint-staged", label: "Lint Staged" },
     ],
     initialValues: ["oxfmt", "oxlint"],
   })
@@ -69,82 +70,88 @@ export async function runSetupWizard() {
     process.exit(0)
   }
 
-  const projectLabel = `${chalk.yellow(project.framework)} (${chalk.blue(project.language)})${project.tailwind ? ` + ${chalk.blue("Tailwind")}` : ""}`
+  const needsDetection =
+    (tools as string[]).includes("oxfmt") ||
+    (tools as string[]).includes("oxlint")
 
-  const isCorrect = await confirm({
-    message: `We detected a ${projectLabel} project. Is this correct?`,
-    initialValue: true,
-  })
+  if (needsDetection) {
+    const projectLabel = `${chalk.yellow(project.framework)} (${chalk.blue(project.language)})${project.tailwind ? ` + ${chalk.blue("Tailwind")}` : ""}`
 
-  if (isCancel(isCorrect)) {
-    cancel("Setup cancelled.")
-    process.exit(0)
-  }
-
-  if (!isCorrect) {
-    const framework = await select({
-      message: "What framework are you using?",
-      options: [
-        { value: "next", label: "Next.js" },
-        { value: "react", label: "React" },
-        { value: "node", label: "Node.js (None)" },
-      ],
-      initialValue: project.framework,
+    const isCorrect = await confirm({
+      message: `Stack detected  ${projectLabel}. Proceed ?`,
+      initialValue: true,
     })
 
-    if (isCancel(framework)) {
+    if (isCancel(isCorrect)) {
       cancel("Setup cancelled.")
       process.exit(0)
     }
 
-    const language = await select({
-      message: "What language are you using?",
-      options: [
-        { value: "ts", label: "TypeScript" },
-        { value: "js", label: "JavaScript" },
-      ],
-      initialValue: project.language,
-    })
+    if (!isCorrect) {
+      const framework = await select({
+        message: "What framework are you using?",
+        options: [
+          { value: "next", label: "Next.js" },
+          { value: "react", label: "React" },
+          { value: "node", label: "Node.js (None)" },
+        ],
+        initialValue: project.framework,
+      })
 
-    if (isCancel(language)) {
-      cancel("Setup cancelled.")
-      process.exit(0)
+      if (isCancel(framework)) {
+        cancel("Setup cancelled.")
+        process.exit(0)
+      }
+
+      const language = await select({
+        message: "What language are you using?",
+        options: [
+          { value: "ts", label: "TypeScript" },
+          { value: "js", label: "JavaScript" },
+        ],
+        initialValue: project.language,
+      })
+
+      if (isCancel(language)) {
+        cancel("Setup cancelled.")
+        process.exit(0)
+      }
+
+      const tailwind = await confirm({
+        message: "Are you using Tailwind CSS?",
+        initialValue: project.tailwind,
+      })
+
+      if (isCancel(tailwind)) {
+        cancel("Setup cancelled.")
+        process.exit(0)
+      }
+
+      project = {
+        ...project,
+        framework: framework as "next" | "react" | "node",
+        language: language as "ts" | "js",
+        tailwind: tailwind as boolean,
+      }
     }
 
-    const tailwind = await confirm({
-      message: "Are you using Tailwind CSS?",
-      initialValue: project.tailwind,
-    })
+    if ((tools as string[]).includes("oxfmt") && project.tailwind) {
+      const tailwindStylesheetPath = getTailwindStylesheet(
+        project.framework === "next"
+      )
+      const stylesheet = await text({
+        message: "What is the path to your Tailwind stylesheet?",
+        initialValue: tailwindStylesheetPath,
+        placeholder: tailwindStylesheetPath,
+      })
 
-    if (isCancel(tailwind)) {
-      cancel("Setup cancelled.")
-      process.exit(0)
+      if (isCancel(stylesheet)) {
+        cancel("Setup cancelled.")
+        process.exit(0)
+      }
+
+      project.tailwindStylesheet = stylesheet as string
     }
-
-    project = {
-      ...project,
-      framework: framework as "next" | "react" | "node",
-      language: language as "ts" | "js",
-      tailwind: tailwind as boolean,
-    }
-  }
-
-  if (project.tailwind) {
-    const tailwindStylesheetPath = getTailwindStylesheet(
-      project.framework === "next"
-    )
-    const stylesheet = await text({
-      message: "What is the path to your Tailwind stylesheet?",
-      initialValue: tailwindStylesheetPath,
-      placeholder: tailwindStylesheetPath,
-    })
-
-    if (isCancel(stylesheet)) {
-      cancel("Setup cancelled.")
-      process.exit(0)
-    }
-
-    project.tailwindStylesheet = stylesheet as string
   }
 
   const summary = `${chalk.cyan((tools as string[]).join(", "))} | ${chalk.blue(project.language)}`
@@ -187,6 +194,9 @@ export async function runSetupWizard() {
           break
         case "husky":
           await initHusky(options, pmName)
+          break
+        case "lintstaged":
+          await initLintStaged(options, pmName)
           break
       }
     } catch (error) {
