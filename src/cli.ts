@@ -11,10 +11,11 @@ import {
   select,
   spinner,
   text,
+  log,
 } from "@clack/prompts"
 import chalk from "chalk"
-import { SetupOptions, SetupTool } from "@/types"
-import { detect, getUserAgent } from "package-manager-detector"
+import type { SetupOptions, SetupTool } from "@/types"
+import { detect } from "package-manager-detector"
 import { detectProject } from "@/lib/detector"
 import { printSignature } from "@/lib/signature"
 import { initOxfmt } from "@/configs/oxfmt"
@@ -34,25 +35,20 @@ export async function showStartupMessage() {
       readFileSync(join(__dirname, "../package.json"), "utf-8")
     )
     version = pkg.version
-  } catch (e) {}
+  } catch (e) { }
 
   printSignature(version)
 
   // 2. Detection
-  const pm = getUserAgent()
-  const project = detectProject()
+  const pm = await detect()
 
-  const projectLabel = `${chalk.yellow(project.framework)} (${chalk.blue(project.language)})${project.tailwind ? ` + ${chalk.blue("Tailwind")}` : ""}`
-
-  console.log(`Detected manager: ${pm}`)
-  console.log(`Detected project: ${projectLabel}`)
-  console.log("")
+  console.log(`Package manager: ${pm?.name}`)
 }
 
 export async function runSetupWizard() {
   let project = detectProject()
 
-  intro(chalk.hex("#A78BFA").bold("✦ Setuply Wizard ✦"))
+  intro(chalk.hex("#A78BFA").bold("Setuply Wizard 🪄"))
 
   const tools = await multiselect({
     message: "What to setup?",
@@ -62,7 +58,7 @@ export async function runSetupWizard() {
       { value: "husky", label: "Husky" },
       { value: "lint-staged", label: "Lint Staged" },
     ],
-    initialValues: ["oxfmt", "oxlint"],
+    initialValues: ["oxfmt", "oxlint", "husky", "lint-staged"],
   })
 
   if (isCancel(tools)) {
@@ -89,7 +85,7 @@ export async function runSetupWizard() {
 
     if (!isCorrect) {
       const framework = await select({
-        message: "What framework are you using?",
+        message: "What is your stack ?",
         options: [
           { value: "next", label: "Next.js" },
           { value: "react", label: "React" },
@@ -164,7 +160,6 @@ export async function runSetupWizard() {
   }
 
   let pmName = "npm"
-  outro(JSON.stringify(options.tools))
 
   if (options.tools.length > 0) {
     const s = spinner()
@@ -184,6 +179,9 @@ export async function runSetupWizard() {
   }
 
   for (const tool of options.tools) {
+    const sTool = spinner()
+    sTool.start(`Configuring ${chalk.cyan(tool)}...`)
+
     try {
       switch (tool) {
         case "oxfmt":
@@ -195,12 +193,16 @@ export async function runSetupWizard() {
         case "husky":
           await initHusky(options, pmName)
           break
-        case "lintstaged":
+        case "lint-staged":
           await initLintStaged(options, pmName)
           break
       }
+      sTool.stop()
+      log.success(`Configured ${chalk.cyan(tool)} successfully.`)
     } catch (error) {
-      console.error(`Failed to initialize ${tool}:`, error)
+      sTool.stop()
+      log.error(`Failed to configure ${chalk.cyan(tool)}.`)
+      console.error(error)
     }
   }
 

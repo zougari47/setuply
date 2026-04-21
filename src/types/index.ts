@@ -1,4 +1,4 @@
-export type SetupTool = "oxlint" | "oxfmt" | "husky" | "lintstaged"
+export type SetupTool = "oxlint" | "oxfmt" | "husky" | "lint-staged"
 export type ProjectLanguage = "ts" | "js"
 export type ProjectFramework = "next" | "react" | "node"
 

@@ -7,12 +7,11 @@ import { join } from "node:path"
 const exec = promisify(execCallback)
 
 export async function initHusky(options: SetupOptions, pmName: string) {
-  console.log("from husky")
   const execCmd = pmName === "npm" ? "npx" : `${pmName} dlx`
 
   await exec(`${execCmd} husky init`)
 
-  if (options.tools.includes("lintstaged")) {
+  if (options.tools.includes("lint-staged")) {
     const lintStagedCmd =
       pmName === "npm" ? "npx lint-staged" : `${pmName} lint-staged`
     const preCommitPath = join(process.cwd(), ".husky", "pre-commit")
