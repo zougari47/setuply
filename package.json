@@ -1,0 +1,35 @@
+{
+  "name": "setuply",
+  "version": "0.0.1",
+  "description": "Setup instantly linting and formatting with OXC, plus Husky and lint-staged in one command.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "bin": {
+    "setuply": "./dist/index.mjs"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "tsdown --watch",
+    "build": "tsdown",
+    "start": "node dist/index.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.27.0",
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "oxfmt": "^0.46.0",
+    "oxlint": "^1.61.0",
+    "tsdown": "^0.21.9",
+    "typescript": "^6.0.3"
+  },
+  "dependencies": {
+    "@clack/prompts": "^1.2.0",
+    "chalk": "^5.6.2",
+    "package-manager-detector": "^1.6.0"
+  }
+}
