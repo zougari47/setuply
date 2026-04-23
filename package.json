@@ -1,6 +1,6 @@
 {
   "name": "setuply",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Setup instantly linting and formatting with OXC, plus Husky and lint-staged in one command.",
   "type": "module",
   "main": "./dist/index.mjs",
