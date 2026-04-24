@@ -1,54 +1,53 @@
 # Setuply
 
-A CLI tool that detects your project and generates ready-to-use config files for modern tooling — so you don't have to.
+Instant linting, formatting, and Git hooks. Powered by OXC, Husky, and lint-staged. One command, zero config headache.
 
-## What it does
+## Getting Started
 
-Run `setuply` in your project root and it will:
+- **npm**
 
-1. **Detect** your framework, language, and Tailwind setup
-2. **Ask** you to confirm (or override) what it found
-3. **Generate** config files tailored to your stack
-4. **Install** the dependencies for you
+  ```bash
+  npx setuply
+  ```
 
-## Supported tools
+- **pnpm**
 
-| Tool | What you get |
-|------|-------------|
-| **oxfmt** | `oxfmt.config.ts` — formatting with smart import sorting and optional Tailwind class sorting |
-| **oxlint** | `oxlint.config.ts` — linting with the right plugins for your stack |
-| husky | _coming soon_ |
-| lint-staged | _coming soon_ |
+  ```bash
+  pnpm dlx setuply
+  ```
 
-## Supported frameworks
+- **yarn**
 
-Setuply currently supports **React** and **Next.js** projects (TypeScript or JavaScript).
+  ```bash
+  yarn dlx setuply
+  ```
 
-More frameworks (Vue, Svelte, etc.) are planned.
+- **bun**
+  ```bash
+  bunx setuply
+  ```
 
-## Usage
+## Supported Tools
 
-```bash
-npx setuply
-```
+| Tool            | What you get                                                                                                            |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| **oxfmt**       | Formatting with smart import sorting and optional Tailwind class sorting                                                |
+| **oxlint**      | Linting with the right plugins for your stack                                                                           |
+| **husky**       | Git hook that fires automatically before every commit, invoking lint-staged so nothing dirty ever lands in your history |
+| **lint-staged** | Runs `oxfmt` and `oxlint` only on staged files, keeping pre-commit checks fast regardless of project size               |
 
-Or install it globally:
+## Supported Stack
 
-```bash
-npm install -g setuply
-setuply
-```
+What Oxlint supports ?
+Support includes JavaScript, JSX, TypeScript, TSX, JSON, JSONC, JSON5, YAML, TOML, HTML, Angular, Vue, CSS, SCSS, Less, Markdown, MDX, GraphQL, Ember, Handlebars, and more.
 
-## How detection works
+What Oxlint supports ?
 
-Setuply reads your `package.json` and checks for:
+- JavaScript and TypeScript (`.js`, `.mjs`, `.cjs`, `.ts`, `.mts`, `.cts`)
+- JSX and TSX (`.jsx`, `.tsx`)
+- Framework files (`.vue`, `.svelte`, `.astro`) by linting only their <script> blocks
 
-- **TypeScript** → `typescript` in deps or a `tsconfig.json`
-- **Next.js** → `next` in deps
-- **React** → `react` in deps
-- **Tailwind** → `tailwindcss` in deps or a `tailwind.config.*` file
-
-If something looks wrong, you can override it during the wizard.
+See the [compatibility matrix](https://oxc.rs/compatibility.html) for detailed framework and file type support.
 
 ## License
 
