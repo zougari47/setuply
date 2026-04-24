@@ -8,6 +8,27 @@ let tmpDir: string;
 beforeEach(() => {
   tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "cli-test-"));
   process.chdir(tmpDir);
+
+  fs.writeFileSync(
+    path.join(tmpDir, "package.json"),
+    JSON.stringify(
+      {
+        private: true,
+        dependencies: {
+          next: "latest",
+          react: "latest",
+          "react-dom": "latest",
+        },
+        devDependencies: {
+          typescript: "latest",
+          "@types/react": "latest",
+          "@types/node": "latest",
+        },
+      },
+      null,
+      2,
+    ),
+  );
 });
 
 afterEach(() => {
@@ -15,16 +36,13 @@ afterEach(() => {
 });
 
 it("creates oxfmt.config.ts with default configuration", async () => {
-  // await initOxfmt({
-  //   project: {
-  //     framework: "next",
-  //     tailwind: false,
-  //     language: "ts",
-  //     hasPackageJson: true,
-  //
-  //   },
-  // });
-  //
+  await initOxfmt({
+    tools: ["oxfmt"],
+    project: {
+      stack: ["typescript", "react", "next", "tailwindcss", "vue", "angular"],
+    },
+  });
+
   const configPath = path.join(tmpDir, "oxfmt.config.ts");
   expect(fs.existsSync(configPath)).toBe(true);
 

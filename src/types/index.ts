@@ -1,17 +1,15 @@
-export type SetupTool = "oxlint" | "oxfmt" | "husky" | "lint-staged"
-export type ProjectLanguage = "ts" | "js"
-export type ProjectFramework = "next" | "react" | "node"
+export type SetupTool = "oxlint" | "oxfmt" | "husky" | "lint-staged";
+export type TechStack = "typescript" | "react" | "next" | "tailwindcss";
+// | "angular"
+// | "vue"
+// | "vitest";
 
 export interface ProjectInfo {
-  language: ProjectLanguage
-  framework: ProjectFramework
-  tailwind: boolean
-  tailwindStylesheet?: string
-  hasPackageJson: boolean
+  stack: TechStack[];
+  tailwindStylesheet?: string;
 }
 
 export interface SetupOptions {
-  tools: SetupTool[]
-  language: ProjectLanguage
-  project: ProjectInfo
+  tools: SetupTool[];
+  project: ProjectInfo;
 }

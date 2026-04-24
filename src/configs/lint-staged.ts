@@ -3,13 +3,13 @@ import { readFileSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
 
 export async function initLintStaged(options: SetupOptions, pmName: string) {
-  const { tools, language, project } = options
+  const { tools, project } = options
   const hasOxfmt = tools.includes("oxfmt")
   const hasOxlint = tools.includes("oxlint")
 
   const extArr = ["js"]
-  if (language === "ts") extArr.push("ts")
-  if (project.framework === "react" || project.framework === "next")
+  if (project.stack.includes("typescript")) extArr.push("ts")
+  if (project.stack.includes("react") || project.stack.includes("next"))
     extArr.push("tsx", "jsx")
   const ext = extArr.length > 1 ? `{${extArr.join(",")}}` : extArr[0]
 

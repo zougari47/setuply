@@ -1,40 +1,34 @@
-import { readFileSync, existsSync } from "node:fs"
-import { join } from "node:path"
+import { readFileSync, existsSync } from "node:fs";
+import { join } from "node:path";
 
-import { ProjectInfo } from "@/types"
+import type { ProjectInfo, TechStack } from "@/types";
 
+const TECH_STACK = ["typescript", "react", "next", "tailwindcss"];
 const DEFAULT_PROJECT_INFO: ProjectInfo = {
-  language: "js",
-  framework: "node",
-  tailwind: false,
-  hasPackageJson: false,
-}
+  stack: [],
+};
 
 export function detectProject(cwd: string = process.cwd()): ProjectInfo {
-  const pkgPath = join(cwd, "package.json")
+  const pkgPath = join(cwd, "package.json");
 
   if (!existsSync(pkgPath)) {
-    return DEFAULT_PROJECT_INFO
+    return DEFAULT_PROJECT_INFO;
   }
 
   try {
-    const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"))
-    const allDeps = { ...pkg.dependencies, ...pkg.devDependencies }
+    const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"));
+    const depsObj = {
+      ...pkg.dependencies,
+      ...pkg.devDependencies,
+    };
+    const allDeps = Object.keys(depsObj || {});
 
-    const isTypeScript = !!allDeps.typescript || existsSync(join(cwd, "tsconfig.json"))
-    const isNext = !!allDeps.next
-    const isReact = !!allDeps.react
-    const isTailwind = !!allDeps.tailwindcss || 
-      existsSync(join(cwd, "tailwind.config.js")) || 
-      existsSync(join(cwd, "tailwind.config.ts"))
+    const stack = allDeps.filter((dep) =>
+      TECH_STACK.includes(dep),
+    ) as TechStack[];
 
-    return {
-      language: isTypeScript ? "ts" : "js",
-      framework: isNext ? "next" : isReact ? "react" : "node",
-      tailwind: isTailwind,
-      hasPackageJson: true,
-    }
+    return { stack };
   } catch (e) {
-    return DEFAULT_PROJECT_INFO
+    return DEFAULT_PROJECT_INFO;
   }
 }
