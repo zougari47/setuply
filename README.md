@@ -38,10 +38,11 @@ Instant linting, formatting, and Git hooks. Powered by OXC, Husky, and lint-stag
 
 ## Supported Stack
 
-What Oxlint supports ?
+**What Oxlint supports ?**
+
 Support includes JavaScript, JSX, TypeScript, TSX, JSON, JSONC, JSON5, YAML, TOML, HTML, Angular, Vue, CSS, SCSS, Less, Markdown, MDX, GraphQL, Ember, Handlebars, and more.
 
-What Oxlint supports ?
+**What Oxlint supports ?**
 
 - JavaScript and TypeScript (`.js`, `.mjs`, `.cjs`, `.ts`, `.mts`, `.cts`)
 - JSX and TSX (`.jsx`, `.tsx`)
