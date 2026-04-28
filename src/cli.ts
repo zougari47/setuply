@@ -17,7 +17,8 @@ import { initOxfmt, initOxlint, initHusky, initLintStaged } from "@/configs";
 import { getTailwindStylesheet, installDeps } from "@/lib/utils";
 
 export async function runSetupWizard(pm: string) {
-  let project = detectProject();
+  const cwd = process.cwd();
+  let project = detectProject(cwd);
 
   intro(chalk.hex("#A78BFA").bold("Setuply Wizard 🪄"));
 
@@ -78,10 +79,7 @@ export async function runSetupWizard(pm: string) {
       };
     }
 
-    if (
-      tools.includes("oxfmt") &&
-      project.stack.includes("tailwindcss")
-    ) {
+    if (tools.includes("oxfmt") && project.stack.includes("tailwindcss")) {
       const tailwindStylesheetPath = getTailwindStylesheet(
         project.stack.includes("next"),
       );
@@ -131,16 +129,16 @@ export async function runSetupWizard(pm: string) {
     try {
       switch (tool) {
         case "oxfmt":
-          initOxfmt(options.project);
+          initOxfmt(options.project, cwd);
           break;
         case "oxlint":
-          initOxlint(options);
+          initOxlint(options, cwd);
           break;
         case "husky":
-          await initHusky(options, pm);
+          await initHusky(options, pm, cwd);
           break;
         case "lint-staged":
-          await initLintStaged(options, pm);
+          await initLintStaged(options, cwd);
           break;
       }
       sTool.stop();

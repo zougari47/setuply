@@ -8,7 +8,7 @@ const DEFAULT_PROJECT_INFO: ProjectInfo = {
   stack: [],
 };
 
-export function detectProject(cwd: string = process.cwd()): ProjectInfo {
+export function detectProject(cwd: string): ProjectInfo {
   const pkgPath = join(cwd, "package.json");
 
   if (!existsSync(pkgPath)) {

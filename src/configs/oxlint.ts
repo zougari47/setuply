@@ -3,9 +3,9 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { defineConfig } from "oxlint";
 
-export function initOxlint(options: SetupOptions) {
+export function initOxlint(options: SetupOptions, cwd: string) {
   // Add scripts to package.json
-  const pkgPath = join(process.cwd(), "package.json");
+  const pkgPath = join(cwd, "package.json");
   let pkg: any = {};
   try {
     pkg = JSON.parse(readFileSync(pkgPath, "utf-8"));
@@ -15,7 +15,7 @@ export function initOxlint(options: SetupOptions) {
 
   pkg.scripts = {
     ...(pkg.scripts || {}),
-    "lint": "oxlint",
+    lint: "oxlint",
     "lint:fix": "oxlint --fix",
   };
 
@@ -41,6 +41,6 @@ export function initOxlint(options: SetupOptions) {
 export default defineConfig(${JSON.stringify(configObj, null, 2)});
 `;
 
-  const configPath = join(process.cwd(), "oxlint.config.ts");
+  const configPath = join(cwd, "oxlint.config.ts");
   writeFileSync(configPath, content, "utf-8");
 }

@@ -4,9 +4,9 @@ import type { defineConfig } from "oxfmt";
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-export function initOxfmt(project: ProjectInfo) {
+export function initOxfmt(project: ProjectInfo, cwd: string) {
   // Add scripts to package.json
-  const pkgPath = join(process.cwd(), "package.json");
+  const pkgPath = join(cwd, "package.json");
   let pkg: any = {};
   try {
     pkg = JSON.parse(readFileSync(pkgPath, "utf-8"));
@@ -16,7 +16,7 @@ export function initOxfmt(project: ProjectInfo) {
 
   pkg.scripts = {
     ...(pkg.scripts || {}),
-    "fmt": "oxfmt",
+    fmt: "oxfmt",
     "fmt:check": "oxfmt --check",
   };
 
@@ -42,6 +42,6 @@ export function initOxfmt(project: ProjectInfo) {
 export default defineConfig(${JSON.stringify(configObj, null, 2)});
 `;
 
-  const configPath = join(process.cwd(), "oxfmt.config.ts");
+  const configPath = join(cwd, "oxfmt.config.ts");
   writeFileSync(configPath, content, "utf-8");
 }
