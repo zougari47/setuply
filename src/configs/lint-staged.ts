@@ -2,7 +2,7 @@ import { SetupOptions } from "@/types";
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-export async function initLintStaged(options: SetupOptions, cwd: string) {
+export function initLintStaged(options: SetupOptions, cwd: string) {
   const { tools, project } = options;
   const hasOxfmt = tools.includes("oxfmt");
   const hasOxlint = tools.includes("oxlint");

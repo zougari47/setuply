@@ -138,7 +138,7 @@ export async function runSetupWizard(pm: string) {
           await initHusky(options, pm, cwd);
           break;
         case "lint-staged":
-          await initLintStaged(options, cwd);
+          initLintStaged(options, cwd);
           break;
       }
       sTool.stop();
