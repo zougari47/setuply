@@ -13,8 +13,12 @@ import {
 import chalk from "chalk";
 import type { SetupOptions, SetupTool, TechStack } from "@/types";
 import { detectProject } from "@/lib/detector";
-import { initOxfmt, initOxlint, initHusky, initLintStaged } from "@/configs";
-import { getTailwindStylesheet, installDeps } from "@/lib/utils";
+import { initOxfmt, initOxlint, initHusky } from "@/configs";
+import {
+  getTailwindStylesheet,
+  installDeps,
+  updatePackageJson,
+} from "@/lib/utils";
 
 export async function runSetupWizard(pm: string) {
   const cwd = process.cwd();
@@ -122,10 +126,14 @@ export async function runSetupWizard(pm: string) {
     }
   }
 
-  for (const tool of options.tools) {
-    const sTool = spinner();
-    sTool.start(`Configuring ${chalk.cyan(tool)}...`);
+  // Update package.json once with all tool configs
+  updatePackageJson(options, cwd);
 
+  const configuredTools: string[] = [];
+  const s = spinner();
+  s.start("Configuring tools...");
+
+  for (const tool of options.tools) {
     try {
       switch (tool) {
         case "oxfmt":
@@ -137,17 +145,20 @@ export async function runSetupWizard(pm: string) {
         case "husky":
           await initHusky(options, pm, cwd);
           break;
-        case "lint-staged":
-          initLintStaged(options, cwd);
-          break;
       }
-      sTool.stop();
-      log.success(`Configured ${chalk.cyan(tool)} successfully.`);
+      configuredTools.push(tool);
     } catch (error) {
-      sTool.stop();
       log.error(`Failed to configure ${chalk.cyan(tool)}.`);
       console.error(error);
     }
+  }
+
+  s.stop();
+
+  if (configuredTools.length > 0) {
+    outro(
+      `${chalk.green("🎉 Successfully configured:")} ${chalk.cyan(configuredTools.join(", "))}. ${chalk.green("Congratulations!")}`,
+    );
   }
 
   return options;
