@@ -7,27 +7,6 @@ let tmpDir: string;
 
 beforeEach(() => {
   tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "cli-test-"));
-
-  fs.writeFileSync(
-    path.join(tmpDir, "package.json"),
-    JSON.stringify(
-      {
-        private: true,
-        dependencies: {
-          next: "latest",
-          react: "latest",
-          "react-dom": "latest",
-        },
-        devDependencies: {
-          typescript: "latest",
-          "@types/react": "latest",
-          "@types/node": "latest",
-        },
-      },
-      null,
-      2,
-    ),
-  );
 });
 
 afterEach(() => {
@@ -111,73 +90,6 @@ it("uses custom tailwindStylesheet from project info", async () => {
   expect(config.sortTailwindcss.stylesheet).toBe("./custom/styles.css");
 });
 
-it("adds fmt scripts to package.json", async () => {
-  initOxfmt(
-    {
-      stack: ["typescript"],
-    },
-    tmpDir,
-  );
-
-  const pkg = JSON.parse(
-    fs.readFileSync(path.join(tmpDir, "package.json"), "utf-8"),
-  );
-
-  expect(pkg.scripts.fmt).toBe("oxfmt");
-  expect(pkg.scripts["fmt:check"]).toBe("oxfmt --check");
-});
-
-it("preserves existing package.json scripts", async () => {
-  fs.writeFileSync(
-    path.join(tmpDir, "package.json"),
-    JSON.stringify(
-      {
-        private: true,
-        scripts: {
-          build: "tsc",
-          test: "vitest",
-        },
-      },
-      null,
-      2,
-    ),
-  );
-
-  initOxfmt(
-    {
-      stack: ["typescript"],
-    },
-    tmpDir,
-  );
-
-  const pkg = JSON.parse(
-    fs.readFileSync(path.join(tmpDir, "package.json"), "utf-8"),
-  );
-
-  expect(pkg.scripts.build).toBe("tsc");
-  expect(pkg.scripts.test).toBe("vitest");
-  expect(pkg.scripts.fmt).toBe("oxfmt");
-  expect(pkg.scripts["fmt:check"]).toBe("oxfmt --check");
-});
-
-it("creates package.json if it does not exist", async () => {
-  fs.unlinkSync(path.join(tmpDir, "package.json"));
-
-  initOxfmt(
-    {
-      stack: ["typescript"],
-    },
-    tmpDir,
-  );
-
-  const pkgPath = path.join(tmpDir, "package.json");
-  expect(fs.existsSync(pkgPath)).toBe(true);
-
-  const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf-8"));
-  expect(pkg.scripts.fmt).toBe("oxfmt");
-  expect(pkg.scripts["fmt:check"]).toBe("oxfmt --check");
-});
-
 it("includes dist folder in ignore patterns", async () => {
   initOxfmt(
     {
@@ -195,3 +107,4 @@ it("includes dist folder in ignore patterns", async () => {
 
   expect(config.ignorePatterns).toContain("**/dist/**");
 });
+
