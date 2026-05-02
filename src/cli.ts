@@ -143,7 +143,7 @@ export async function runSetupWizard(pm: string) {
           initOxlint(options, cwd);
           break;
         case "husky":
-          await initHusky(options, pm, cwd);
+          await initHusky(options.tools, pm, cwd);
           break;
       }
       configuredTools.push(tool);

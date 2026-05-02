@@ -1,5 +1,4 @@
 import { initHusky } from "@/configs/husky";
-import { SetupOptions } from "@/types";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
@@ -20,8 +19,6 @@ const execMock = vi.hoisted(() =>
 vi.mock("node:child_process", () => ({ exec: execMock }));
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
-const makeOptions = (tools: string[]): SetupOptions =>
-  ({ tools, project: { stack: ["typescript"] } }) as SetupOptions;
 
 const getPreCommitPath = (dir: string) =>
   path.join(dir, ".husky", "pre-commit");
@@ -51,7 +48,7 @@ afterEach(() => {
 describe("initHusky", () => {
   describe("exec command", () => {
     it("uses `npx husky init` for npm", async () => {
-      await initHusky(makeOptions(["husky"]), "npm", tmpDir);
+      await initHusky(["husky"], "npm", tmpDir);
 
       expect(execMock).toHaveBeenCalledWith(
         "npx husky init",
@@ -59,24 +56,24 @@ describe("initHusky", () => {
       );
     });
 
-    it.each(["pnpm", "yarn", "bun"])(
-      "uses `%s dlx husky init` for %s",
-      async (pm) => {
-        await initHusky(makeOptions(["husky"]), pm, tmpDir);
-
-        expect(execMock).toHaveBeenCalledWith(
-          `${pm} dlx husky init`,
-          expect.any(Function),
-        );
-      },
-    );
+    it.each([
+      { pm: "pnpm", dlx: "pnpm dlx" },
+      { pm: "yarn", dlx: "yarn dlx" },
+      { pm: "bun", dlx: "bunx" },
+    ])("uses `$dlx husky init` for $pm", async ({ pm, dlx }) => {
+      await initHusky(["husky"], pm, tmpDir);
+      expect(execMock).toHaveBeenCalledWith(
+        `${dlx} husky init`,
+        expect.any(Function),
+      );
+    });
   });
 
   describe("when lint-staged is NOT in tools", () => {
     it("does not overwrite the pre-commit file", async () => {
       seedHuskyInit(tmpDir);
 
-      await initHusky(makeOptions(["husky"]), "npm", tmpDir);
+      await initHusky(["husky"], "npm", tmpDir);
 
       expect(fs.readFileSync(getPreCommitPath(tmpDir), "utf-8")).toBe(
         "npm test\n",
@@ -86,7 +83,7 @@ describe("initHusky", () => {
     it("does not overwrite the pre-commit file when tools is empty", async () => {
       seedHuskyInit(tmpDir);
 
-      await initHusky(makeOptions([]), "npm", tmpDir);
+      await initHusky([], "npm", tmpDir);
 
       expect(fs.readFileSync(getPreCommitPath(tmpDir), "utf-8")).toBe(
         "npm test\n",
@@ -98,22 +95,24 @@ describe("initHusky", () => {
     it("overwrites pre-commit with `npx lint-staged` for npm", async () => {
       seedHuskyInit(tmpDir); // husky init always runs before writeFileSync
 
-      await initHusky(makeOptions(["husky", "lint-staged"]), "npm", tmpDir);
+      await initHusky(["husky", "lint-staged"], "npm", tmpDir);
 
       expect(fs.readFileSync(getPreCommitPath(tmpDir), "utf-8")).toBe(
         "npx lint-staged\n",
       );
     });
 
-    it.each(["pnpm", "yarn", "bun"])(
-      "overwrites pre-commit with `%s lint-staged` for %s",
-      async (pm) => {
-        seedHuskyInit(tmpDir); // husky init always runs before writeFileSync
-
-        await initHusky(makeOptions(["husky", "lint-staged"]), pm, tmpDir);
-
+    it.each([
+      { pm: "pnpm", dlx: "pnpm dlx" },
+      { pm: "yarn", dlx: "yarn dlx" },
+      { pm: "bun", dlx: "bunx" },
+    ])(
+      "overwrites pre-commit with `$dlx lint-staged` for $pm",
+      async ({ pm, dlx }) => {
+        seedHuskyInit(tmpDir);
+        await initHusky(["husky", "lint-staged"], pm, tmpDir);
         expect(fs.readFileSync(getPreCommitPath(tmpDir), "utf-8")).toBe(
-          `${pm} lint-staged\n`,
+          `${dlx} lint-staged\n`,
         );
       },
     );
@@ -125,10 +124,9 @@ describe("initHusky", () => {
         throw new Error("exec failed");
       });
 
-      await expect(
-        initHusky(makeOptions(["husky"]), "npm", tmpDir),
-      ).rejects.toThrow("exec failed");
+      await expect(initHusky(["husky"], "npm", tmpDir)).rejects.toThrow(
+        "exec failed",
+      );
     });
   });
 });
-
