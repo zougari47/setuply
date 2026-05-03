@@ -1,0 +1,88 @@
+---
+import '@fontsource/inter/400.css';
+import '@fontsource/inter/500.css';
+import '@fontsource/inter/600.css';
+import '@fontsource/inter/700.css';
+import '@fontsource/jetbrains-mono/400.css';
+import '@fontsource/jetbrains-mono/500.css';
+import '../styles/global.css';
+import Hero from '../components/hero';
+import Features from '../components/features';
+import Process from '../components/process';
+import AdvancedOptions from '../components/advanced-options';
+import Footer from '../components/footer';
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Setuply - One command JS tooling setup</title>
+		<meta name="description" content="Setuply installs and configures Oxlint, Oxfmt, Husky, lint-staged, and commitlint in one command. No boilerplate, no tedious config files." />
+		<meta name="keywords" content="oxlint, oxfmt, husky, lint-staged, commitlint, js tooling, developer tools, cli" />
+
+		<meta property="og:title" content="Setuply — One command JS tooling setup" />
+		<meta property="og:description" content="Set up your entire JS tooling in one command. Oxlint, Oxfmt, Husky, lint-staged, commitlint — instantly configured." />
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="https://setuply.dev" />
+
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content="Setuply — One command JS tooling setup" />
+		<meta name="twitter:description" content="Set up your entire JS tooling in one command. Oxlint, Oxfmt, Husky, lint-staged, commitlint — instantly configured." />
+	</head>
+	<body>
+		{/* Navbar */}
+		<nav class="fixed top-0 left-0 right-0 z-50 bg-brand-bg/80 backdrop-blur-md border-b border-brand-border">
+			<div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+				<a href="#" class="hover:opacity-90 transition-opacity flex items-center">
+					<span class="font-bold text-white tracking-tight text-xl">
+						<span class="text-transparent bg-clip-text bg-linear-to-r from-[#9F7AEA] to-[#5A2EE3]">S</span>etuply
+					</span>
+				</a>
+
+				<div class="hidden sm:flex items-center gap-8">
+					<a href="#features" class="text-sm font-medium text-brand-muted hover:text-white transition-colors">Features</a>
+					<a href="#how-it-works" class="text-sm font-medium text-brand-muted hover:text-white transition-colors">How it works</a>
+					<a href="#advanced" class="text-sm font-medium text-brand-muted hover:text-white transition-colors">Advanced</a>
+					<a
+						href="https://github.com"
+						target="_blank"
+						rel="noopener noreferrer"
+						class="px-4 py-1.5 rounded-full bg-white text-black text-xs font-bold hover:bg-white/90 transition-all flex items-center gap-2 shadow-lg shadow-white/5"
+					>
+						<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+							<path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
+						</svg>
+						Star on GitHub
+					</a>
+				</div>
+
+				<div class="sm:hidden">
+					<a
+						href="https://github.com"
+						target="_blank"
+						rel="noopener noreferrer"
+						aria-label="GitHub"
+						class="p-2 text-brand-muted"
+					>
+						<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+							<path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
+						</svg>
+					</a>
+				</div>
+			</div>
+		</nav>
+
+		<main>
+			<Hero client:idle />
+			<Features/>
+			<Process/>
+			<AdvancedOptions/>
+		</main>
+
+		<Footer />
+	</body>
+</html>
