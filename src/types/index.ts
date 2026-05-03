@@ -1,4 +1,4 @@
-export type SetupTool = "oxlint" | "oxfmt" | "husky" | "lint-staged";
+export type SetupTool = "oxlint" | "oxfmt" | "husky" | "lint-staged" | "commitlint";
 export type TechStack = "typescript" | "react" | "next" | "tailwindcss";
 // | "angular"
 // | "vue"

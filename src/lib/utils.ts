@@ -59,10 +59,11 @@ export function getTailwindStylesheet(hasNext: boolean) {
 }
 
 export async function installDeps(deps: string[], pm: string) {
+  const expandedDeps = deps.flatMap(d => d === "commitlint" ? ["@commitlint/cli", "@commitlint/config-conventional"] : [d]);
   const installCmd =
     pm === "npm"
-      ? `npm install -D ${deps.join(" ")}`
-      : `${pm} add -D ${deps.join(" ")}`;
+      ? `npm install -D ${expandedDeps.join(" ")}`
+      : `${pm} add -D ${expandedDeps.join(" ")}`;
 
   await exec(installCmd);
 }

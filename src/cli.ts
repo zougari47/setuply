@@ -13,7 +13,7 @@ import {
 import chalk from "chalk";
 import type { SetupOptions, SetupTool, TechStack } from "@/types";
 import { detectProject } from "@/lib/detector";
-import { initOxfmt, initOxlint, initHusky } from "@/configs";
+import { initOxfmt, initOxlint, initHusky, initCommitlint } from "@/configs";
 import {
   getTailwindStylesheet,
   installDeps,
@@ -33,6 +33,7 @@ export async function runSetupWizard(pm: string) {
       { value: "oxfmt", label: "Oxfmt" },
       { value: "husky", label: "Husky" },
       { value: "lint-staged", label: "Lint Staged" },
+      { value: "commitlint", label: "Commitlint" },
     ],
     initialValues: ["oxfmt", "oxlint", "husky", "lint-staged"],
   });
@@ -42,9 +43,9 @@ export async function runSetupWizard(pm: string) {
     process.exit(0);
   }
 
-  const needsOxfmtOxlint = tools.includes("oxfmt") || tools.includes("oxlint");
+  const hasOxfmtOrOxlint = tools.includes("oxfmt") || tools.includes("oxlint");
 
-  if (needsOxfmtOxlint) {
+  if (hasOxfmtOrOxlint) {
     const projectLabel =
       project.stack.length > 0
         ? `${chalk.yellow(project.stack.join(", "))}`
@@ -102,7 +103,8 @@ export async function runSetupWizard(pm: string) {
     }
   }
 
-  const summary = `${chalk.cyan((tools as string[]).join(", "))} | ${chalk.blue(project.stack.join(", "))}`;
+  const summary = `${chalk.cyan((tools as string[]).join(", "))} ${hasOxfmtOrOxlint ? `| ${chalk.blue(project.stack.join(", "))}` : ""}`;
+
   outro(`${chalk.green("Ready!")} ${summary}`);
 
   const options: SetupOptions = {
@@ -145,6 +147,9 @@ export async function runSetupWizard(pm: string) {
         case "husky":
           await initHusky(options.tools, pm, cwd);
           break;
+        case "commitlint":
+          initCommitlint(options.tools, pm, cwd);
+          break;
       }
       configuredTools.push(tool);
     } catch (error) {
@@ -157,7 +162,7 @@ export async function runSetupWizard(pm: string) {
 
   if (configuredTools.length > 0) {
     outro(
-      `${chalk.green("🎉 Successfully configured:")} ${chalk.cyan(configuredTools.join(", "))}. ${chalk.green("Congratulations!")}`,
+      `${chalk.green("🎉 Successfully configured:")} ${chalk.cyan(configuredTools.join(", "))}.`,
     );
   }
 
