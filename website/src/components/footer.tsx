@@ -23,7 +23,7 @@ export default function Footer() {
 
         <div className="flex items-center gap-6">
           <a
-            href="https://github.com"
+            href="https://github.com/zougari47/setuply"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="GitHub repository"
@@ -33,7 +33,7 @@ export default function Footer() {
             GitHub
           </a>
           <a
-            href="https://npmjs.com"
+            href="https://www.npmjs.com/package/setuply"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="npm package registry"
@@ -51,4 +51,3 @@ export default function Footer() {
     </footer>
   );
 }
-
