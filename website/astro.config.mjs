@@ -4,6 +4,8 @@ import react from "@astrojs/react";
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
+  site: "https://zougari47.github.io",
+  base: "/setuply",
   build: {
     assets: "setuply",
     inlineStylesheets: "always",
