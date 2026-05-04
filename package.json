@@ -33,7 +33,7 @@
   "bugs": {
     "url": "https://github.com/zougari47/setuply/issues"
   },
-  "homepage": "https://github.com/zougari47/setuply#readme",
+  "homepage": "https://zougari47.github.io/setuply/",
   "license": "MIT",
   "packageManager": "pnpm@10.27.0",
   "devDependencies": {
