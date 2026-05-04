@@ -20,13 +20,12 @@ import {
   updatePackageJson,
 } from "@/lib/utils";
 
-export async function runSetupWizard(pm: string) {
-  const cwd = process.cwd();
+export async function runSetupWizard(pm: string, cwd: string) {
   let project = detectProject(cwd);
 
   intro(chalk.hex("#A78BFA").bold("Setuply Wizard 🪄"));
 
-  const tools = await multiselect<SetupTool>({
+  const selected = await multiselect<SetupTool>({
     message: "What would you like to setup?",
     options: [
       { value: "oxlint", label: "Oxlint" },
@@ -38,10 +37,12 @@ export async function runSetupWizard(pm: string) {
     initialValues: ["oxfmt", "oxlint", "husky", "lint-staged"],
   });
 
-  if (isCancel(tools)) {
+  if (isCancel(selected)) {
     cancel("Setup cancelled.");
     process.exit(0);
   }
+
+  const tools = selected as SetupTool[];
 
   const hasOxfmtOrOxlint = tools.includes("oxfmt") || tools.includes("oxlint");
 
@@ -105,7 +106,7 @@ export async function runSetupWizard(pm: string) {
 
   const summary = `${chalk.cyan((tools as string[]).join(", "))} ${hasOxfmtOrOxlint ? `| ${chalk.blue(project.stack.join(", "))}` : ""}`;
 
-  outro(`${chalk.green("Ready!")} ${summary}`);
+  log.step(`${chalk.green("Ready!")} ${summary}`);
 
   const options: SetupOptions = {
     tools: tools as SetupTool[],
@@ -114,6 +115,7 @@ export async function runSetupWizard(pm: string) {
 
   if (options.tools.length > 0) {
     const s = spinner();
+
     s.start(
       `Installing dependencies: ${chalk.cyan(options.tools.join(", "))}...`,
     );
