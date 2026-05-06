@@ -1,7 +1,7 @@
-// lint-staged config is handled by updatePackageJson in cli.ts
-// No separate config file needed - config lives in package.json
+// lint-staged config is handled by updatePackageJson function in lib/utils
+// No separate config file needed, config lives in package.json
 
-import { SetupOptions, TechStack } from "@/types";
+import { TechStack } from "@/types";
 
 export function buildLintStagedConfig(
   stack: TechStack[],
@@ -12,8 +12,7 @@ export function buildLintStagedConfig(
 
   const extArr = ["js"];
   if (stack.includes("typescript")) extArr.push("ts");
-  if (stack.includes("react") || stack.includes("next"))
-    extArr.push("tsx", "jsx");
+  if (stack.includes("react") || stack.includes("next")) extArr.push("tsx", "jsx");
   const ext = extArr.length > 1 ? `{${extArr.join(",")}}` : extArr[0];
 
   if (hasOxfmt) {

@@ -17,11 +17,11 @@ export function printSignature() {
   let version = "0.0.0";
 
   try {
-    const pkg = JSON.parse(
-      readFileSync(join(__dirname, "../package.json"), "utf-8"),
-    );
+    const pkg = JSON.parse(readFileSync(join(__dirname, "../package.json"), "utf-8"));
     version = pkg.version;
-  } catch (e) {}
+  } catch {
+    throw new Error("Enable to read and parse package.json to get the version.");
+  }
 
   const lines = logo.split("\n");
   const colors = [
@@ -35,9 +35,7 @@ export function printSignature() {
     chalk.hex("#D5D3FF"),
   ];
 
-  const coloredLogo = lines
-    .map((line, i) => colors[i % colors.length](line))
-    .join("\n");
+  const coloredLogo = lines.map((line, i) => colors[i % colors.length](line)).join("\n");
 
   console.log(coloredLogo);
   console.log(chalk.dim(`  v${version}\n`));

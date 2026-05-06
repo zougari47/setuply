@@ -23,12 +23,10 @@ export function detectProject(cwd: string): ProjectInfo {
     };
     const allDeps = Object.keys(depsObj || {});
 
-    const stack = allDeps.filter((dep) =>
-      TECH_STACK.includes(dep),
-    ) as TechStack[];
+    const stack = allDeps.filter((dep) => TECH_STACK.includes(dep)) as TechStack[];
 
     return { stack };
-  } catch (e) {
+  } catch {
     return DEFAULT_PROJECT_INFO;
   }
 }

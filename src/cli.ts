@@ -14,11 +14,7 @@ import chalk from "chalk";
 import type { SetupOptions, SetupTool, TechStack } from "@/types";
 import { detectProject } from "@/lib/detector";
 import { initOxfmt, initOxlint, initHusky, initCommitlint } from "@/configs";
-import {
-  getTailwindStylesheet,
-  installDeps,
-  updatePackageJson,
-} from "@/lib/utils";
+import { getTailwindStylesheet, installDeps, updatePackageJson } from "@/lib/utils";
 
 export async function runSetupWizard(pm: string, cwd: string) {
   let project = detectProject(cwd);
@@ -86,9 +82,7 @@ export async function runSetupWizard(pm: string, cwd: string) {
     }
 
     if (tools.includes("oxfmt") && project.stack.includes("tailwindcss")) {
-      const tailwindStylesheetPath = getTailwindStylesheet(
-        project.stack.includes("next"),
-      );
+      const tailwindStylesheetPath = getTailwindStylesheet(project.stack.includes("next"));
       const stylesheet = await text({
         message: "What is the path to your Tailwind stylesheet?",
         initialValue: tailwindStylesheetPath,
@@ -116,14 +110,12 @@ export async function runSetupWizard(pm: string, cwd: string) {
   if (options.tools.length > 0) {
     const s = spinner();
 
-    s.start(
-      `Installing dependencies: ${chalk.cyan(options.tools.join(", "))}...`,
-    );
+    s.start(`Installing dependencies: ${chalk.cyan(options.tools.join(", "))}...`);
 
     try {
       await installDeps(options.tools, pm);
       s.stop(`Installed dependencies successfully via ${pm}`);
-    } catch (error) {
+    } catch {
       s.stop(
         `Failed to install dependencies. Please run your package manager's install command manually.`,
       );

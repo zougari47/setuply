@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { Command } from "commander";
-import { log, spinner } from "@clack/prompts";
+import { spinner } from "@clack/prompts";
 import chalk from "chalk";
 import { detect } from "package-manager-detector";
 
