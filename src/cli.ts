@@ -62,7 +62,6 @@ export async function runSetupWizard(pm: string, cwd: string) {
       const stackItems = await autocompleteMultiselect<TechStack>({
         message: "What is your stack?",
         options: [
-          { value: "typescript", label: "TypeScript" },
           { value: "next", label: "Next.js" },
           { value: "react", label: "React" },
           { value: "tailwindcss", label: "Tailwind CSS" },

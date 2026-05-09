@@ -3,7 +3,7 @@ import { join } from "node:path";
 
 import type { ProjectInfo, TechStack } from "@/types";
 
-const TECH_STACK = ["typescript", "react", "next", "tailwindcss"];
+const TECH_STACK = ["react", "next", "tailwindcss"];
 const DEFAULT_PROJECT_INFO: ProjectInfo = {
   stack: [],
 };

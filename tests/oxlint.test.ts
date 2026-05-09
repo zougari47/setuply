@@ -17,7 +17,7 @@ it("creates oxlint.config.ts with react and next plugins", async () => {
   initOxlint(
     {
       tools: ["oxlint"],
-      project: { stack: ["typescript", "react", "next"] },
+      project: { stack: ["react", "next"] },
     },
     tmpDir,
   );
@@ -42,15 +42,12 @@ it("creates config without react plugins", async () => {
   initOxlint(
     {
       tools: ["oxlint"],
-      project: { stack: ["typescript"] },
+      project: { stack: [] },
     },
     tmpDir,
   );
 
-  const content = fs.readFileSync(
-    path.join(tmpDir, "oxlint.config.ts"),
-    "utf-8",
-  );
+  const content = fs.readFileSync(path.join(tmpDir, "oxlint.config.ts"), "utf-8");
   const match = content.match(/defineConfig\(([\s\S]*)\);/);
   const config = JSON.parse(match![1]);
 
@@ -61,15 +58,12 @@ it("creates config with react but without next plugins", async () => {
   initOxlint(
     {
       tools: ["oxlint"],
-      project: { stack: ["typescript", "react"] },
+      project: { stack: ["react"] },
     },
     tmpDir,
   );
 
-  const content = fs.readFileSync(
-    path.join(tmpDir, "oxlint.config.ts"),
-    "utf-8",
-  );
+  const content = fs.readFileSync(path.join(tmpDir, "oxlint.config.ts"), "utf-8");
   const match = content.match(/defineConfig\(([\s\S]*)\);/);
   const config = JSON.parse(match![1]);
 
@@ -83,15 +77,12 @@ it("includes categories, rules, and settings in the config", async () => {
   initOxlint(
     {
       tools: ["oxlint"],
-      project: { stack: ["typescript"] },
+      project: { stack: [] },
     },
     tmpDir,
   );
 
-  const content = fs.readFileSync(
-    path.join(tmpDir, "oxlint.config.ts"),
-    "utf-8",
-  );
+  const content = fs.readFileSync(path.join(tmpDir, "oxlint.config.ts"), "utf-8");
   const match = content.match(/defineConfig\(([\s\S]*)\);/);
   const config = JSON.parse(match![1]);
 

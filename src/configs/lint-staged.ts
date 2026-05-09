@@ -10,8 +10,7 @@ export function buildLintStagedConfig(
 ): Record<string, string[]> {
   const config: Record<string, string[]> = {};
 
-  const extArr = ["js"];
-  if (stack.includes("typescript")) extArr.push("ts");
+  const extArr = ["js", "ts"];
   if (stack.includes("react") || stack.includes("next")) extArr.push("tsx", "jsx");
   const ext = extArr.length > 1 ? `{${extArr.join(",")}}` : extArr[0];
 

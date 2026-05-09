@@ -1,5 +1,5 @@
 export type SetupTool = "oxlint" | "oxfmt" | "husky" | "lint-staged" | "commitlint";
-export type TechStack = "typescript" | "react" | "next" | "tailwindcss";
+export type TechStack = "react" | "next" | "tailwindcss";
 // | "angular"
 // | "vue"
 // | "vitest";

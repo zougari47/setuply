@@ -16,7 +16,7 @@ afterEach(() => {
 it("creates oxfmt.config.ts with default configuration", async () => {
   initOxfmt(
     {
-      stack: ["typescript", "react", "next", "tailwindcss"],
+      stack: ["react", "next", "tailwindcss"],
     },
     tmpDir,
   );
@@ -37,15 +37,12 @@ it("creates oxfmt.config.ts with default configuration", async () => {
 it("creates config with Tailwind but without Next.js", async () => {
   initOxfmt(
     {
-      stack: ["typescript", "react", "tailwindcss"],
+      stack: ["react", "tailwindcss"],
     },
     tmpDir,
   );
 
-  const content = fs.readFileSync(
-    path.join(tmpDir, "oxfmt.config.ts"),
-    "utf-8",
-  );
+  const content = fs.readFileSync(path.join(tmpDir, "oxfmt.config.ts"), "utf-8");
   const match = content.match(/defineConfig\(([\s\S]*)\);/);
   const config = JSON.parse(match![1]);
 
@@ -55,15 +52,12 @@ it("creates config with Tailwind but without Next.js", async () => {
 it("creates config without Tailwind", async () => {
   initOxfmt(
     {
-      stack: ["typescript", "react"],
+      stack: ["react"],
     },
     tmpDir,
   );
 
-  const content = fs.readFileSync(
-    path.join(tmpDir, "oxfmt.config.ts"),
-    "utf-8",
-  );
+  const content = fs.readFileSync(path.join(tmpDir, "oxfmt.config.ts"), "utf-8");
   const match = content.match(/defineConfig\(([\s\S]*)\);/);
   const config = JSON.parse(match![1]);
 
@@ -74,16 +68,13 @@ it("creates config without Tailwind", async () => {
 it("uses custom tailwindStylesheet from project info", async () => {
   initOxfmt(
     {
-      stack: ["typescript", "react", "next", "tailwindcss"],
+      stack: ["react", "next", "tailwindcss"],
       tailwindStylesheet: "./custom/styles.css",
     },
     tmpDir,
   );
 
-  const content = fs.readFileSync(
-    path.join(tmpDir, "oxfmt.config.ts"),
-    "utf-8",
-  );
+  const content = fs.readFileSync(path.join(tmpDir, "oxfmt.config.ts"), "utf-8");
   const match = content.match(/defineConfig\(([\s\S]*)\);/);
   const config = JSON.parse(match![1]);
 
@@ -93,18 +84,14 @@ it("uses custom tailwindStylesheet from project info", async () => {
 it("includes dist folder in ignore patterns", async () => {
   initOxfmt(
     {
-      stack: ["typescript"],
+      stack: [],
     },
     tmpDir,
   );
 
-  const content = fs.readFileSync(
-    path.join(tmpDir, "oxfmt.config.ts"),
-    "utf-8",
-  );
+  const content = fs.readFileSync(path.join(tmpDir, "oxfmt.config.ts"), "utf-8");
   const match = content.match(/defineConfig\(([\s\S]*)\);/);
   const config = JSON.parse(match![1]);
 
   expect(config.ignorePatterns).toContain("**/dist/**");
 });
-
