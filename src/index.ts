@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { Command } from "commander";
-import { spinner } from "@clack/prompts";
+import { log, spinner } from "@clack/prompts";
 import chalk from "chalk";
 import { detect } from "package-manager-detector";
 
@@ -10,7 +10,7 @@ import { printSignature } from "@/lib/signature";
 import { initCommitlint, initHusky, initOxfmt, initOxlint } from "@/configs";
 import { installDeps, updatePackageJson } from "@/lib/utils";
 
-import type { SetupOptions, SetupTool } from "@/types";
+import type { SetupOptions, SetupTool, TechStack } from "@/types";
 
 async function main() {
   const program = new Command();
@@ -27,6 +27,9 @@ async function main() {
     .option("--lint-staged", "Setup Lint Staged")
     .option("--commitlint", "Setup Commitlint")
     .option("--all", "Setup all tools")
+    .option("--react", "Add React support to lint-staged and oxlint")
+    .option("--next", "Add Next.js support to lint-staged and oxlint")
+    .option("--tailwind", "Add Tailwind CSS class sorting if oxfmt is enabled")
     .parse(process.argv);
 
   const pm = (await detect())?.name;
@@ -56,10 +59,15 @@ async function main() {
     printSignature();
     selectedTools = (await runSetupWizard(pm, cwd)).tools;
   } else {
-    let options: SetupOptions = {
+    const stack: TechStack[] = [
+      opts.react && "react",
+      opts.next && "next",
+      opts.tailwind && "tailwindcss",
+    ].filter(Boolean);
+    const options: SetupOptions = {
       tools: selectedTools,
       project: {
-        stack: [],
+        stack,
       },
     };
     const s = spinner();
@@ -93,6 +101,12 @@ async function main() {
     s.stop(
       `${chalk.green("🎉 Successfully configured:")} ${chalk.cyan(selectedTools.join(", "))}.`,
     );
+
+    if (opts.oxfmt && opts.tailwind) {
+      log.info(
+        "You chose Tailwind CSS class sorting. Verify the stylesheet path in oxfmt.config.ts. If it is different, modify it.",
+      );
+    }
   }
 }
 
