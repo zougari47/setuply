@@ -10,6 +10,8 @@ import { printSignature } from "@/lib/signature";
 import { initCommitlint, initHusky, initOxfmt, initOxlint } from "@/configs";
 import { installDeps, updatePackageJson } from "@/lib/utils";
 
+import { version } from '../package.json' with { type: 'json' };
+
 import type { SetupOptions, SetupTool, TechStack } from "@/types";
 
 async function main() {
@@ -20,7 +22,7 @@ async function main() {
     .description(
       "Setuply installs and configures Oxfmt, Oxlint, Husky, LintStaged and Commitlint instantly.",
     )
-    .version("0.1.0")
+    .version(version)
     .option("--oxlint", "Setup Oxlint")
     .option("--oxfmt", "Setup Oxfmt")
     .option("--husky", "Setup Husky")
