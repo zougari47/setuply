@@ -32,6 +32,24 @@ const flags = [
     description: "Only installs and configures commitlint.",
     icon: Terminal,
   },
+  {
+    flag: "--react",
+    description:
+      "Configures the setup for React projects with React-specific linting rules.",
+    icon: Terminal,
+  },
+  {
+    flag: "--tailwind",
+    description:
+      "Enables Tailwind CSS support with class sorting in Oxfmt.",
+    icon: Terminal,
+  },
+  {
+    flag: "--next",
+    description:
+      "Configures the setup for Next.js projects with Next.js-specific linting rules.",
+    icon: Terminal,
+  },
 ];
 
 export default function AdvancedOptions() {

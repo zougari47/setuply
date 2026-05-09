@@ -47,6 +47,9 @@ Skip the interactive wizard by passing flags:
 - `--lint-staged` - Setup Lint Staged only
 - `--commitlint` - Setup Commitlint only
 - `--all` - Setup all tools (Oxfmt, Oxlint, Husky, Lint Staged, Commitlint)
+- `--react` - Configure for React projects (includes React-specific linting rules)
+- `--tailwind` - Configure Tailwind CSS support (enables class sorting in Oxfmt)
+- `--next` - Configure for Next.js projects (includes Next.js-specific linting rules)
 
 Example:
 
